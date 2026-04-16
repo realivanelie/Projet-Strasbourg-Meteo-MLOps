@@ -1,0 +1,23 @@
+artifact_path: file:///media/seagate/Projets_IA/BIHAR2026_TPT_DJALEGA/model/registry/436075709632722480/models/m-3e258e1760b243f594a10fe96e0778ea/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.10.19
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.2
+    skops_trusted_types: null
+mlflow_version: 3.10.1
+model_id: m-3e258e1760b243f594a10fe96e0778ea
+model_size_bytes: 435015
+model_uuid: m-3e258e1760b243f594a10fe96e0778ea
+prompts: null
+run_id: 4c4e4b8562dd4c09bc7ffb00318673ee
+utc_time_created: '2026-03-17 23:33:56.375099'

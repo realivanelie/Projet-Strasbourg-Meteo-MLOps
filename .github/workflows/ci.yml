@@ -1,0 +1,170 @@
+# Pipeline CI/CD — API Météo BIHAR2026 / Strasbourg
+#
+# Déclenchement : push ou PR sur master
+# Jobs :
+#   1. Build & Push Docker image vers ghcr.io
+#   2. Tests unitaires & d'intégration (pytest)
+#   3. Qualité du code (flake8) — règles allégées
+#   4. Tests HTTP sur le conteneur issu du build
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  REGISTRY  : ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/bihar2026_tpt_djalega
+
+jobs:
+  # Job 1 : Build et push de l'image Docker vers ghcr.io
+  build:
+    name: Build & Push Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Connexion à ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extraction des métadonnées (tag, label)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
+
+      - name: Build et push de l'image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags  : ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            GIT_COMMIT_ID=${{ github.sha }}
+
+  # Job 2 : Tests unitaires et d'intégration (pytest)
+  tests:
+    name: Tests unitaires & intégration (pytest)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Installation des dépendances
+        run: pip install -r requirements.txt
+
+      - name: Lancement des tests pytest
+        run: |
+          pytest tests/ \
+            --ignore=tests/test_api_docker.py \
+            --tb=short \
+            --verbose \
+            -p no:warnings
+        env:
+          COMMIT_ID: ${{ github.sha }}
+
+  # Job 3 : Vérification qualité du code (flake8)
+  lint:
+    name: Qualité du code (flake8)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Installation de flake8
+        run: pip install flake8
+
+      - name: Vérification flake8
+        run: |
+          flake8 api/ src/ tests/ \
+            --max-line-length=120 \
+            --exclude=__pycache__,.git,*.pyc \
+            --select=E9,F63,F7,F82
+          # E9  : erreurs de syntaxe
+          # F63 : mauvais usage des assertions / étoiles
+          # F7  : erreurs de syntaxe dans les annotations
+          # F82 : variables non définies (undefined name)
+
+  # Job 4 : Tests HTTP sur le conteneur issu du build
+  test:
+    name: Run API tests (Docker)
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Connexion à ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull de l'image buildée
+        run: docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Lancement du conteneur API
+        run: |
+          docker run -d \
+            --name forecast-api \
+            -p 8000:8000 \
+            -e COMMIT_ID=${{ github.sha }} \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Attente que l'API soit prête
+        run: |
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:8000/health; then
+              echo "API prête."
+              break
+            fi
+            echo "Tentative $i/15 — attente..."
+            sleep 2
+          done
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Installation des dépendances
+        run: pip install -r requirements.txt
+
+      - name: Exécution des tests HTTP
+        run: pytest tests/test_api_docker.py -v
+
+      - name: Arrêt et suppression du conteneur
+        if: always()
+        run: docker stop forecast-api || true && docker rm forecast-api || true

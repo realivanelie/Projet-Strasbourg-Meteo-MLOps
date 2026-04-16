@@ -1,0 +1,16 @@
+creation_timestamp: 1775736633253
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1775736633253
+model_id: m-ccbe4ae660ec4a0a92769239ebaa98ac
+name: Meteo_LightGBM
+run_id: 355bf604fb064a38a0534522d9e55ae5
+run_link: null
+source: models:/m-ccbe4ae660ec4a0a92769239ebaa98ac
+status: READY
+status_message: null
+storage_location: file:///media/seagate/Projets_IA/BIHAR2026_TPT_DJALEGA/model/registry/436075709632722480/models/m-ccbe4ae660ec4a0a92769239ebaa98ac/artifacts
+user_id: null
+version: 9
+workspace: default

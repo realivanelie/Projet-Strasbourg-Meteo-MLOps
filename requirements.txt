@@ -1,0 +1,29 @@
+# 1. Manipulation des Données
+pandas>=2.0.0
+numpy>=1.24.0
+
+# 2. Machine Learning & Séries Temporelles
+scikit-learn>=1.3.0
+lightgbm>=4.0.0
+statsmodels>=0.14.0
+darts>=0.26.0
+
+# 3. MLOps & Sérialisation
+mlflow>=2.8.0
+joblib>=1.3.0
+
+# 4. API REST & Serveur Web
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+
+# 6. Visualisation & Monitoring
+matplotlib>=3.7.0
+seaborn>=0.13.0
+
+# 7. Tests Unitaires & Intégration
+pytest>=7.4.0
+httpx>=0.25.0
+
+# 8. Monitoring Prometheus
+prometheus-client>=0.19.0

@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environnements
+.env
+.venv
+env/
+venv/
+*.env
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Logs
+logs/
+*.log
+
+# Base de données SQLite (données locales, pas à versionner)
+data/meteo_predictions.db
+data/images/
+
+# Images des notebooks (trop lourdes — télécharger sur Kaggle)
+monitoring/*.png
+monitoring/*.jpg
+
+# MLflow runs (trop lourds — seul le .pkl champion est versionné)
+model/registry/436075709632722480/
+model/registry/models/Meteo_LightGBM/version-*/
+
+# Modèles keras lourds — image (455M), text (42M), multimodal (134M)
+*.h5
+*.pt
+*.pth
+*.keras
+*.pkl
+model/image/
+model/text/
+model/multimodal/
+
+# Données lourdes — CSV train (à télécharger sur Kaggle)
+data/train.csv
+data/text/
+
+# Pytest cache
+.pytest_cache/
+tests/__pycache__/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

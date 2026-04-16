@@ -1,0 +1,7 @@
+artifact_location: file:///media/seagate/Projets_IA/BIHAR2026_TPT_DJALEGA/model/registry/436075709632722480
+creation_time: 1773536778518
+experiment_id: '436075709632722480'
+last_update_time: 1773536778518
+lifecycle_stage: active
+name: Meteo_LightGBM_Production
+workspace: default

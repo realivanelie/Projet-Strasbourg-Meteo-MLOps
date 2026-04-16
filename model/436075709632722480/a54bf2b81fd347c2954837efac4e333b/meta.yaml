@@ -1,0 +1,14 @@
+artifact_uri: file:///media/seagate/Projets_IA/BIHAR2026_TPT_DJALEGA/model/registry/436075709632722480/a54bf2b81fd347c2954837efac4e333b/artifacts
+end_time: 1775234800784
+entry_point_name: ''
+experiment_id: '436075709632722480'
+lifecycle_stage: active
+run_id: a54bf2b81fd347c2954837efac4e333b
+run_name: LightGBM_V1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775234779489
+status: 3
+tags: []
+user_id: realivanelie

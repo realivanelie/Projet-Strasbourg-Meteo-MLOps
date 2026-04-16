@@ -1,0 +1,10 @@
+artifact_location: file:///media/seagate/Projets_IA/BIHAR2026_TPT_DJALEGA/model/registry/436075709632722480/models/m-786d94de5bf6480fb9b224366f607889/artifacts
+creation_timestamp: 1773787609113
+experiment_id: '436075709632722480'
+last_updated_timestamp: 1773787614008
+model_id: m-786d94de5bf6480fb9b224366f607889
+model_type: null
+name: lightgbm_model
+source_run_id: 826ef0fc8b9b4427b264a8e54fd14314
+status: 2
+status_message: null

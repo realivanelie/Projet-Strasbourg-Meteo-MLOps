@@ -1,0 +1,55 @@
+# =============================================================================
+# Stack complète — Projet BIHAR2026
+#
+# Lance l'API FastAPI + Prometheus + Grafana en un seul commande.
+#
+# Usage :
+#   docker compose up --build
+#
+# Accès :
+#   API      → http://localhost:8000/docs
+#   Prometheus → http://localhost:9090
+#   Grafana    → http://localhost:3000  (admin / admin)
+# =============================================================================
+
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GIT_COMMIT_ID: local
+    container_name: bihar_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data      
+      - ./model:/app/model   
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: bihar_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - api
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: bihar_grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./monitoring/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./monitoring/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards
+
+volumes:
+  grafana-storage:
