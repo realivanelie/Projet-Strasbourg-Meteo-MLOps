@@ -148,11 +148,14 @@ jobs:
           for i in $(seq 1 15); do
             if curl -sf http://localhost:8000/health; then
               echo "API prête."
-              break
+              exit 0
             fi
             echo "Tentative $i/15 — attente..."
             sleep 2
           done
+          echo "L'API n'a pas démarré dans les délais."
+          docker logs forecast-api
+          exit 1
 
       - name: Setup Python 3.10
         uses: actions/setup-python@v5
