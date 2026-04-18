@@ -16,7 +16,7 @@ on:
 
 env:
   REGISTRY  : ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/bihar2026_tpt_djalega
+  IMAGE_NAME: ${{ github.repository_owner }}/meteo-strasbourg-lgbm
 
 jobs:
   # Job 1 : Build et push de l'image Docker vers ghcr.io
@@ -120,6 +120,9 @@ jobs:
     name: Run API tests (Docker)
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      contents: read
+      packages: read
 
     steps:
       - name: Checkout du code
